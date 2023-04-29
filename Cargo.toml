@@ -1,0 +1,13 @@
+[package]
+name = "vaultwarden-backup"
+version = "0.1.0"
+authors = ["Sergey Malinkin <malinkinsa@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+chrono = "0.4.24"
+flate2 = "1.0.25"
+serde = { version = "1.0.160", features = ["derive"] }
+serde_json = "1.0.96"
+tar = "0.4.38"
+toml = "0.7.3"

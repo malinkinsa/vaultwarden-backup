@@ -1,0 +1,10 @@
+vaultwarden_data = "/data/vw-data/"
+backup_location = "/data/vw-backup/"
+
+[db]
+db_type = "postgresql"
+username = "username"
+password = "password"
+db_name = "mydb"
+host = "127.0.0.1"
+port = 5432
