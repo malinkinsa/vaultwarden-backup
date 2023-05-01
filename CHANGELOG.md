@@ -4,7 +4,7 @@
 - None
 
 ## New features
-- Added functionality for backing up both databases (PostgreSQL, MySQL, SQLite) and files.
+- Added functionality for backup both databases (PostgreSQL, MySQL, SQLite) and files.
 
 ## Other changes
 - None
