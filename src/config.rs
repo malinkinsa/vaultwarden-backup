@@ -11,7 +11,7 @@ const CONFIG_DEFAULT_PATH: &str = "config.toml";
 pub struct Config {
     pub vaultwarden_data: String,
     pub backup_location: String,
-    db: Option<Database>,
+    db: Database,
 }
 
 #[derive(Deserialize)]
@@ -38,8 +38,7 @@ impl Config {
     }
 
     fn get_db(&self) -> &Database {
-        let db = self.db.as_ref().unwrap();
-        db
+        &self.db
     }
 
     pub fn get_db_type(&self) -> String {
