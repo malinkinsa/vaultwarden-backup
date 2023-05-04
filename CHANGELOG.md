@@ -4,7 +4,7 @@
 - None
 
 ## New features
-- None
+- The ability to specify which files to exclude from the backup process has been added. Additionally, all files related to SQLite are always excluded from backup, as the database itself is backed up separately in the first step.
 
 ## Other changes
 - None
