@@ -11,7 +11,7 @@ const CONFIG_DEFAULT_PATH: &str = "config.toml";
 pub struct Config {
     pub vaultwarden_data: String,
     pub backup_location: String,
-    pub exclude_files: Option<String>,
+    exclude_files: Option<String>,
     db: Database,
 }
 

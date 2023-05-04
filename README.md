@@ -18,6 +18,7 @@ Configuration values are as follows:
 |------------------|----------|----------|------------------------------------------------------------------|
 | vaultwarden_data | String   |          | The path to the Vaultwarden data directory                       |
 | backup_location  | String   |          | The path to the directory where the backup will be stored        |
+| exclude_files    | String   | Optional | List of files to exclude from backup                             |
 | db               | Database |          | Block containing database configuration details                  |
 | db_type          | String   |          | The type of the database (postgresql, mysql, mariadb, or sqlite) |
 | username         | String   | Optional | The username to connect to the database                          |
