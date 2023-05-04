@@ -6,7 +6,7 @@ use std::fs;
 use std::fs::File;
 use std::path::Path;
 
-pub fn create_archive(backup_location: &String, folder_for_archive: &String) -> Result<(), Box<dyn Error>> {
+pub fn create_archive(backup_location: &String, folder_for_archive: &String, exclude_files: Vec<String>) -> Result<(), Box<dyn Error>> {
     let archive_file = File::create(format!("{}data.tar.gz", backup_location))?;
     let encoder = GzEncoder::new(archive_file, Compression::default());
 
@@ -15,6 +15,9 @@ pub fn create_archive(backup_location: &String, folder_for_archive: &String) -> 
     let target_dir = Path::new(folder_for_archive);
     let target_entries = fs::read_dir(target_dir)?;
 
+    let mut exclude_files = exclude_files;
+    exclude_files.push("sqlite3".to_string());
+
     for entry in target_entries {
         let entry = entry?;
         let entry_path = entry.path();
@@ -22,10 +25,12 @@ pub fn create_archive(backup_location: &String, folder_for_archive: &String) -> 
 
         if entry_path.is_file() {
             if let Some(target_file) = entry.file_name().to_str() {
-                if !target_file.contains("sqlite3") && !target_file.contains("vaultwarden.log") {
+                if !exclude_files.iter().any(|f|target_file.contains(f.trim())) {
                     if let Err(error) = archive_builder.append_file(relative_path.to_str().unwrap(), &mut File::open(&entry_path)?) {
-                        return Err(Box::new(error));
+                        return Err(Box::new(error))
                     }
+                } else {
+                    eprintln!("The backup process has excluded the following files: {}", entry_path.display());
                 }
             }
         } else {
