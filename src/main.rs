@@ -29,7 +29,11 @@ fn main() {
             eprintln!("Starting file backup")
         }
 
-        let files_backup = file::create_archive(backup_location, &config.vaultwarden_data);
+        let files_backup = file::create_archive(
+            backup_location,
+            &config.vaultwarden_data,
+            config.get_exclude_files()
+        );
 
         if let Err(error) = files_backup {
             eprintln!("(!)Error during files backup process: {}", error);
