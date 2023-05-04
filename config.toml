@@ -1,5 +1,6 @@
 vaultwarden_data = "/data/vw-data/"
 backup_location = "/data/vw-backup/"
+exclude_files = "vaultwarden"
 
 [db]
 db_type = "postgresql"

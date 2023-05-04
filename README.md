@@ -14,17 +14,18 @@ The application requires a configuration file in TOML format to specify the Vaul
 
 Configuration values are as follows:
 
-| Name             | Type     | Optional | Description                                                      |
-|------------------|----------|----------|------------------------------------------------------------------|
-| vaultwarden_data | String   |          | The path to the Vaultwarden data directory                       |
-| backup_location  | String   |          | The path to the directory where the backup will be stored        |
-| db               | Database |          | Block containing database configuration details                  |
-| db_type          | String   |          | The type of the database (postgresql, mysql, mariadb, or sqlite) |
-| username         | String   | Optional | The username to connect to the database                          |
-| password         | String   | Optional | The password to connect to the database                          |
-| db_name          | String   | Optional | The name of the database                                         |
-| host             | String   | Optional | The hostname/IP address of the database                          |
-| port             | Integer  | Optional | The port to connect to the database                              |
+| Name             | Type     | Optional | Description                                                                                                                                                |
+|------------------|----------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| vaultwarden_data | String   |          | The path to the Vaultwarden data directory                                                                                                                 |
+| backup_location  | String   |          | The path to the directory where the backup will be stored                                                                                                  |
+| exclude_files    | String   | Optional | The list consists of files that should be excluded from the backup process by checking if they contain a certain substring, rather than by their full name |
+| db               | Database |          | Block containing database configuration details                                                                                                            |
+| db_type          | String   |          | The type of the database (postgresql, mysql, mariadb, or sqlite)                                                                                           |
+| username         | String   | Optional | The username to connect to the database                                                                                                                    |
+| password         | String   | Optional | The password to connect to the database                                                                                                                    |
+| db_name          | String   | Optional | The name of the database                                                                                                                                   |
+| host             | String   | Optional | The hostname/IP address of the database                                                                                                                    |
+| port             | Integer  | Optional | The port to connect to the database                                                                                                                        |
 
 ### Launch
 

@@ -11,6 +11,7 @@ const CONFIG_DEFAULT_PATH: &str = "config.toml";
 pub struct Config {
     pub vaultwarden_data: String,
     pub backup_location: String,
+    exclude_files: Option<String>,
     db: Database,
 }
 
@@ -106,6 +107,14 @@ impl Config {
         }
 
         Ok(&self.backup_location)
+    }
+
+    pub fn get_exclude_files(&self) -> Vec<String> {
+        if let Some(excluded_files) = &self.exclude_files {
+            excluded_files.split(',').map(|f| f.trim().to_string()).collect()
+        } else {
+            Vec::new()
+        }
     }
 }
 
