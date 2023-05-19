@@ -1,3 +1,15 @@
+# 0.2.0
+
+## Breaking changes
+- On output, a single archive file is generated, containing the database dump and system files in the form of zip/tar.gz. 
+- The archive filename has been modified.
+
+## New features
+- Added the ability to create a password-protected archive.
+
+## Other changes
+- None
+
 # 0.1.1
 
 ## Breaking changes

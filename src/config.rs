@@ -11,6 +11,8 @@ const CONFIG_DEFAULT_PATH: &str = "config.toml";
 pub struct Config {
     pub vaultwarden_data: String,
     pub backup_location: String,
+    encrypt_data: Option<bool>,
+    encrypt_key: Option<String>,
     exclude_files: Option<String>,
     db: Database,
 }
@@ -36,6 +38,14 @@ impl Config {
         };
 
         config
+    }
+
+    pub fn get_encrypt_status(&self) -> bool {
+        self.encrypt_data.unwrap_or(false)
+    }
+
+    pub fn get_encrypt_key(&self) -> String {
+        self.encrypt_key.clone().unwrap_or("".to_string())
     }
 
     fn get_db(&self) -> &Database {
