@@ -2,23 +2,27 @@ use chrono::{DateTime, Local};
 use std::process::exit;
 
 use crate::config::Config;
+use crate::file::create_archive;
 
 mod config;
 mod database;
 mod file;
+mod middleware;
 
 fn main() {
     let config:Config = Config::new();
     if let Ok(backup_location) = config.get_backup_location() {
         let start_datetime: DateTime<Local> = Local::now();
-        let datetime = start_datetime.format("%Y-%m-%d-%H:%M").to_string();
+        let formatted_datetime: String = start_datetime.format("%d-%m-%Y_%H-%M").to_string();
+        let datetime: String = start_datetime.format("%Y-%m-%d-%H:%M").to_string();
 
-        eprintln!("Backup process started at {}\nStarting a database backup", start_datetime.format("%Y-%m-%d %H:%M:%S"));
+        eprintln!("Backup process started at {}\nCreating a temporary directory", start_datetime.format("%Y-%m-%d %H:%M:%S"));
+        let temp_dir = file::create_temp_dir(backup_location, &formatted_datetime).unwrap();
 
         let db_backup = database::database_backup(
             config.get_db_type(),
             config.db_connection_string(),
-            backup_location,
+            &temp_dir,
             datetime
         );
 
@@ -29,8 +33,8 @@ fn main() {
             eprintln!("Starting file backup")
         }
 
-        let files_backup = file::create_archive(
-            backup_location,
+        let files_backup = file::create_archive_with_vw_files(
+            &temp_dir,
             &config.vaultwarden_data,
             config.get_exclude_files()
         );
@@ -40,6 +44,17 @@ fn main() {
             exit(1)
         } else {
             eprintln!("Files backup successfully completed")
+        }
+
+        let archive = create_archive(
+            config.get_encrypt_status(),
+            config.get_encrypt_key(),
+            &temp_dir,
+        );
+
+        if let Err(error) = archive {
+            eprintln!("(!) {}", error);
+            exit(1)
         }
 
         let end_datetime: DateTime<Local> = Local::now();
