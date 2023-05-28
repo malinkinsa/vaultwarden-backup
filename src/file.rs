@@ -5,9 +5,9 @@ use tar::Builder;
 use std::fs;
 use std::fs::File;
 use std::path::Path;
-use std::process::{Command, exit, Output};
+use walkdir::WalkDir;
 
-use crate::middleware::{ensure_executable_exists, delete_temp_dir};
+use crate::middleware::{delete_temp_dir, zip_dir};
 
 pub fn create_temp_dir(backup_location: &str, formatted_datetime: &str) -> Result<String, Box<dyn Error>> {
     let temp_dir = match backup_location.ends_with('/') {
@@ -61,19 +61,9 @@ pub fn create_archive(
 ) -> Result<(), Box<dyn Error>> {
 
     if archive_type {
-        let software = "7zz".to_string();
-        if ensure_executable_exists(&software) {
-            let protected_archive: Result<(), Box<dyn Error>> = create_password_protected_archive(
-                directory_path,
-                &archive_key,
-            );
-
-            if let Err(error) = protected_archive {
-                eprintln!("(!) {}", error);
-            }
-        } else {
-            eprintln!("7zz not found. Please install it and restart the program.");
-            exit(1);
+        let protected_archive = create_password_protected_archive(directory_path, &archive_key);
+        if let Err(error) = protected_archive {
+            eprintln!("(!) {}", error);
         }
     } else {
         let unprotected_archive: Result<(), Box<dyn Error>> = create_unprotected_archive(directory_path);
@@ -105,27 +95,20 @@ fn create_unprotected_archive(directory_path: &str) -> Result<(), Box<dyn Error>
 
 fn create_password_protected_archive(
     directory_path: &str,
-    archive_key: &String
-) -> Result<(), Box<dyn Error>> {
+    archive_key: &str
+) -> zip::result::ZipResult<()> {
 
-    let backup_process:Output = Command::new("7zz")
-        .arg("a")
-        .arg("-tzip")
-        .arg(format!("-p{}", archive_key))
-        .arg(format!("{}.zip", directory_path.trim_end_matches('/')))
-        .arg(directory_path)
-        .output()?;
+    let walkdir = WalkDir::new(directory_path);
+    let archive_file = File::create(format!("{}.zip", directory_path.trim_end_matches('/'))).unwrap();
 
-    if backup_process.status.success() {
-        eprintln!("A password-protected archive has been created.");
-        if let Err(err) = delete_temp_dir(directory_path.trim_end_matches('/')) {
-            eprintln!("Failed to delete temporary directory: {}", err)
-        }
-        Ok(())
-    } else {
-        let error = format!("Failed to create a password-protected archive: {}",
-                            String::from_utf8_lossy(&backup_process.stderr));
-        Err(error.into())
+    let items = walkdir.into_iter();
+
+    zip_dir(&mut items.filter_map(|e| e.ok()), directory_path, archive_file, archive_key)?;
+
+    if let Err(err) = delete_temp_dir(directory_path.trim_end_matches('/')) {
+        eprintln!("Failed to delete temporary directory: {}", err)
     }
+
+    Ok(())
 
 }
