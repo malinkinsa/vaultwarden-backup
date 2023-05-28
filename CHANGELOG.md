@@ -1,3 +1,14 @@
+# 0.2.1
+
+## Breaking changes
+- None
+
+## New features
+- None
+
+## Other changes
+- There is no longer a need for 7zip. The creation of a secure archive is now done using the zip-rs library.
+
 # 0.2.0
 
 ## Breaking changes
